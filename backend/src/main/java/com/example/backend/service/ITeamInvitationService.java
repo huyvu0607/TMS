@@ -2,11 +2,10 @@ package com.example.backend.service;
 
 import com.example.backend.dto.team.request.InviteMemberRequest;
 import com.example.backend.dto.team.response.TeamInvitationResponse;
-import com.example.backend.model.TeamInvitation;
 
 import java.util.List;
 
-public interface TeamInvitationService {
+public interface ITeamInvitationService {
 
     /**
      * Mời member vào team (tạo invitation và gửi email)
