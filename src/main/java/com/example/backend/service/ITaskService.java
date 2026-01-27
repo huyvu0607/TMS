@@ -1,16 +1,18 @@
 package com.example.backend.service;
+
 import com.example.backend.dto.task.request.*;
 import com.example.backend.dto.task.response.*;
-public interface TaskService {
-    // Lấy danh sách task (Dùng TaskFilterRequest và trả về TaskListResponse)
+
+public interface ITaskService {
+    // 1. Lấy danh sách task (kèm lọc)
     TaskListResponse getAllTasks(TaskFilterRequest filter);
 
-    // Tạo mới task (Dùng CreateTaskRequest và trả về TaskDetailResponse)
+    // 2. Tạo mới task
     TaskDetailResponse createTask(CreateTaskRequest request);
 
-    // Cập nhật task (Dùng UpdateTaskRequest)
+    // 3. Cập nhật task theo ID
     void updateTask(Long id, UpdateTaskRequest request);
 
-    // Giao task cho ai đó (Dùng AssignTaskRequest)
+    // 4. Giao task cho nhân viên
     void assignTask(AssignTaskRequest request);
 }
