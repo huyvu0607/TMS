@@ -1,7 +1,7 @@
 // frontend/src/components/team/TeamSwitcher.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useTeam } from '../../context/TeamContext';
+import { useTeam } from '../../hooks/useTeam';
 import { ChevronDown, Check, Plus, Users, Settings, Trash2, MoreVertical, AlertTriangle, X } from 'lucide-react';
 import { deleteTeam } from '../../api/teamApi';
 import { useToast } from '../ui/Toast';

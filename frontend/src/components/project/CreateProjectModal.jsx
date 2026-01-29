@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Calendar, ChevronDown } from 'lucide-react';
 import { projectApi } from '../../api/projectApi';
-import { useTeam } from '../../context/TeamContext';
+import { useTeam } from '../../hooks/useTeam';
 
 const CreateProjectModal = ({ onClose, onSuccess }) => {
   const { currentTeam } = useTeam();

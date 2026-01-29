@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mail, Phone, MoreVertical, Trash2, Briefcase, Building2, AlertTriangle, X, Shield, Users } from 'lucide-react';
 import { removeMember, updateMemberRole, getTeamMembers } from '../../api/teamApi';
-import { useTeam } from '../../context/TeamContext';
+import { useTeam } from '../../hooks/useTeam';
 import { useToast } from '../ui/Toast';
 import { useAuth } from '../../context/AuthContext';
 

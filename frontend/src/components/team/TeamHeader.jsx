@@ -1,7 +1,7 @@
 // frontend/src/components/team/TeamHeader.jsx
 import React from 'react';
 import { Users, UserCheck, Shield, Plus } from 'lucide-react';
-import { useTeam } from '../../context/TeamContext';
+import { useTeam } from '../../hooks/useTeam';
 import PendingInvitationsDropdown from './PendingInvitationsDropdown';
 
 const TeamHeader = ({ stats, onInviteMember, onCreateTeam, userRole }) => {

@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, FolderKanban, ChevronDown, Check } from 'lucide-react';
+import { X, FolderKanban, ChevronDown, Check, AlertCircle } from 'lucide-react';
 import { taskApi } from '../../api/taskApi';
 import { projectApi } from '../../api/projectApi';
 import { teamApi } from '../../api/teamApi';
 import { useToast } from '../ui/Toast';
-import { useTeam } from '../../context/TeamContext';
+import { useTeam } from '../../hooks/useTeam';
 
 /**
  * Modal tạo task mới từ Sidebar - Có chọn Project
+ * ✅ Added: Permission check - VIEWER cannot create tasks
  */
 const CreateTaskFromSidebar = ({ isOpen, onClose }) => {
-  const { currentTeam } = useTeam();
+  const { currentTeam, currentTeamMember } = useTeam();
   const toast = useToast();
 
   const [projects, setProjects] = useState([]);
@@ -27,6 +28,9 @@ const CreateTaskFromSidebar = ({ isOpen, onClose }) => {
     dueDate: '',
     assigneeIds: [],
   });
+
+  // ✅ Check permission - VIEWER cannot create tasks
+  const canCreateTask = currentTeamMember?.role !== 'VIEWER';
 
   // Load projects khi mở modal
   useEffect(() => {
@@ -83,6 +87,12 @@ const CreateTaskFromSidebar = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // ✅ Double check permission before submit
+    if (!canCreateTask) {
+      toast.error('VIEWER không có quyền tạo task');
+      return;
+    }
+
     if (!formData.projectId) {
       toast.error('Vui lòng chọn project');
       return;
@@ -134,14 +144,60 @@ const CreateTaskFromSidebar = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  if (!canCreateTask) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md m-4 p-6 animate-slideUp">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Không có quyền
+            </h2>
+            <button
+              onClick={() => onClose(false)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="flex flex-col items-center py-8 text-center">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+              <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+            </div>
+            <p className="text-gray-900 dark:text-white font-medium mb-2">
+              Bạn không có quyền tạo task
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+              Role <span className="font-semibold text-red-600 dark:text-red-400">VIEWER</span> chỉ có quyền xem, không thể tạo hoặc chỉnh sửa task.
+            </p>
+            <button
+              onClick={() => onClose(false)}
+              className="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors font-medium"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl m-4 flex flex-col max-h-[90vh] animate-slideUp">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Tạo Task Mới
-          </h2>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Tạo Task Mới
+            </h2>
+            {/* ✅ Show role badge */}
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Role: <span className="font-semibold text-blue-600 dark:text-blue-400">
+                {currentTeamMember?.role || 'MEMBER'}
+              </span>
+            </p>
+          </div>
           <button
             onClick={() => {
               onClose(false);
